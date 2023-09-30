@@ -3,6 +3,7 @@
 
 # Code to generate parameters for simple linear regression
 def generate_parameters(X, Y):
+    """Calculate the regression parameters."""
     Sx = 0  # Sig(xi)
     Sy = 0  # Sig(yi)
     Sxy = 0  # Sig[(xi)*(yi)]
