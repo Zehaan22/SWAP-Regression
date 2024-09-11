@@ -616,6 +616,14 @@ alternative hypothesis: stationary</code></pre>
 <p><img src="Covariates_Macro_Economic_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>We can also consider looking at a various lags of <span class="math inline">\(Y\)</span> subtracted from itself to create a more stationary series.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>Y.diff <span class="ot">&lt;-</span> <span class="fu">diff</span>(Y,<span class="dv">6</span>)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Y.diff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Covariates_Macro_Economic_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 </section>
 

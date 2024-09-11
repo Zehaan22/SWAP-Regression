@@ -289,3 +289,11 @@ Residual Analysis
 ```{r}
 plot(Y-p2y)
 ```
+
+We can also consider looking at a various lags of $Y$ subtracted from itself to create a more stationary series.
+
+```{r}
+
+Y.diff <- diff(Y,6)
+plot(Y.diff)
+```
