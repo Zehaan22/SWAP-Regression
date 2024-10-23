@@ -49,7 +49,7 @@ Firstly, let's individually analyse both the covariates as individual time serie
     ```{r}
 
     # Test for Stationarity
-    plot.ts(SENSEX.dat, ylab = "CPI")
+    plot.ts(SENSEX.dat, ylab = "SENSEX")
     adf.test(SENSEX.dat)
     ```
 
@@ -122,4 +122,40 @@ summary(m1)
 # Directrion 2
 m2 <- lm(X~Y+X.lag1+X.lag2+X.lag3+X.lag4)
 summary(m2)
+```
+
+Residuals plot for this:\
+
+```{r}
+# For Direction - 1
+plot(m1$residuals)
+adf.test(m1$residuals)
+
+# For Direction - 2
+plot(m2$residuals)
+adf.test(m2$residuals)
+```
+
+```{r}
+
+## Direction 1 
+m1 <- lm(Y~X+X.lag1+Y.lag1+Y.lag2+Y.lag3+Y.lag4)
+summary(m1)
+
+## Directrion 2
+m2 <- lm(X~Y+Y.lag1+X.lag1+X.lag2+X.lag3+X.lag4)
+summary(m2)
+
+
+```
+
+```{r}
+
+# For Direction - 1
+plot(m1$residuals, ylab = "Residuals", main = "CPI on SENSEX")
+adf.test(m1$residuals)
+
+# For Direction - 2
+plot(m2$residuals, ylab = "Residuals", main = "SENSEX on CPI")
+adf.test(m2$residuals)
 ```
