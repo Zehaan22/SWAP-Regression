@@ -1,0 +1,125 @@
+---
+title: "Data Experimentation (Pre Report)"
+author: "Zehaan Naik"
+format: html
+editor: visual
+---
+
+## CPI Vs SENSEX Data
+
+Loading the data:
+
+```{r}
+dat.gold <- read.csv("GoldUP.csv")
+CPI.dat <- dat.gold$CPI
+SENSEX.dat <- dat.gold$Sensex
+
+CPI.dat <- ts(CPI.dat, start = c(2000,10),  frequency = 12)
+SENSEX.dat <- ts(SENSEX.dat, start = c(2000,10),  frequency = 12)
+```
+
+Data Summary:
+
+We have monthly data from October 2000 to August 2020.
+
+```{r}
+## CPI Data
+summary(CPI.dat)
+
+# SENSEX Data
+summary(SENSEX.dat)
+```
+
+Firstly, let's individually analyse both the covariates as individual time series:
+
+1.  CPI Data:
+
+    ```{r}
+
+    library(tseries)
+
+
+    # Test for Stationarity
+    plot.ts(CPI.dat, ylab = "CPI")
+    adf.test(CPI.dat)
+    ```
+
+2.  SENSEX Data
+
+    ```{r}
+
+    # Test for Stationarity
+    plot.ts(SENSEX.dat, ylab = "CPI")
+    adf.test(SENSEX.dat)
+    ```
+
+As we can see in the case of both our covariates, their individual time series is **not** stationary (by the Augmented Dickey-Fuller Test).
+
+Lastly, before diving into any data transformations or modeling, I wish to try out the Granger test on the two time series:
+
+```{r}
+library(lmtest)
+
+grangertest(CPI.dat, SENSEX.dat)
+grangertest(SENSEX.dat, CPI.dat)
+```
+
+As evident from the Granger test, we can use CPI to predict SENSEX directly however, the same cannot be said about SENSEX serving as a predictor for CPI. This motivates us to consider some transformations on our data to be able to arrive at a better fitting model to us SWAP on.
+
+#### Growth Rate
+
+Firstly, consider a growth rate analysis:
+
+```{r}
+
+# For CPI
+CPI.qtrly <- diff(CPI.dat, lag = 4)
+plot.ts(CPI.qtrly)
+adf.test(CPI.qtrly)
+
+# For SENSEX
+SENSEX.qtrly <- diff(SENSEX.dat, lag = 4)
+plot.ts(SENSEX.qtrly)
+adf.test(SENSEX.qtrly)
+```
+
+We observe that differencing at a quaterly time gap does not give us a stationary time series. Hence, analysing the growth rate need not be the best way to go forward.
+
+To further experiment on this we consider a bi-directional causality hypothesis with an AR(4) model on either co-variate.
+
+```{r}
+
+# Preparing the data
+Y <- CPI.dat
+X <- SENSEX.dat
+# Computing Lags
+Y.lag1 <- lag(Y)
+X.lag1 <- lag(X)
+Y.lag2 <- lag(Y, k=2)
+X.lag2 <- lag(X, k=2)
+Y.lag3 <- lag(Y, k=3)
+X.lag3 <- lag(X, k=3)
+Y.lag4 <- lag(Y, k=4)
+X.lag4 <- lag(X, k=4)
+
+# Fixing the lags
+X <- X[1:(length(X)-5)]
+X.lag1 <- X.lag1[2:(length(X.lag1)-4)]
+X.lag2 <- X.lag2[3:(length(X.lag2)-3)]
+X.lag3 <- X.lag3[4:(length(X.lag3)-2)]
+X.lag4 <- X.lag4[5:(length(X.lag4)-1)]
+
+Y <- Y[1:(length(Y)-5)]
+Y.lag1 <- Y.lag1[2:(length(Y.lag1)-4)]
+Y.lag2 <- Y.lag2[3:(length(Y.lag2)-3)]
+Y.lag3 <- Y.lag3[4:(length(Y.lag3)-2)]
+Y.lag4 <- Y.lag4[5:(length(Y.lag4)-1)]
+
+## Direction 1 
+m1 <- lm(Y~X+Y.lag1+Y.lag2+Y.lag3+Y.lag4)
+summary(m1)
+
+# Directrion 2
+m2 <- lm(X~Y+X.lag1+X.lag2+X.lag3+X.lag4)
+summary(m2)
+```
