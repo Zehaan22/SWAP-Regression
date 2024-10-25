@@ -530,44 +530,45 @@ alternative hypothesis: stationary</code></pre>
 <span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="dv">0</span></span>
 <span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="dv">0</span></span>
 <span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>c <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>der_a <span class="ot">&lt;-</span> <span class="cf">function</span>(X,Y,a,b,c){</span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">&lt;-</span> (Y<span class="sc">-</span>(a<span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> b<span class="sc">*</span>X <span class="sc">+</span> c))<span class="sc">*</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(loss)<span class="sc">/</span><span class="fu">length</span>(X))</span>
-<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>der_b <span class="ot">&lt;-</span> <span class="cf">function</span>(X,Y,a,b,c){</span>
-<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">&lt;-</span> (Y<span class="sc">-</span>(a<span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> b<span class="sc">*</span>X <span class="sc">+</span> c))<span class="sc">*</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>X)</span>
-<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(loss)<span class="sc">/</span><span class="fu">length</span>(X))</span>
-<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>der_c <span class="ot">&lt;-</span> <span class="cf">function</span>(X,Y,a,b,c){</span>
-<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">&lt;-</span> (Y<span class="sc">-</span>(a<span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> b<span class="sc">*</span>X <span class="sc">+</span> c))<span class="sc">*</span>(<span class="sc">-</span><span class="dv">2</span>)</span>
-<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(loss)<span class="sc">/</span><span class="fu">length</span>(X))</span>
-<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a><span class="co"># part - 1</span></span>
-<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> X[<span class="fu">which</span>(X<span class="sc">&lt;</span><span class="dv">90</span>)]</span>
-<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>Y1 <span class="ot">&lt;-</span> Y[<span class="fu">which</span>(X<span class="sc">&lt;</span><span class="dv">90</span>)]</span>
-<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">10000</span></span>
-<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a>lr <span class="ot">=</span> <span class="fl">1e-8</span></span>
-<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
-<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a>  a_n <span class="ot">&lt;-</span> a <span class="sc">-</span> lr<span class="sc">*</span><span class="fu">der_a</span>(X1,Y1,a,b,c)</span>
-<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a>  b_n <span class="ot">&lt;-</span> b <span class="sc">-</span> lr<span class="sc">*</span><span class="fu">der_b</span>(X1,Y1,a,b,c)</span>
-<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a>  c_n <span class="ot">&lt;-</span> c <span class="sc">-</span> lr<span class="sc">*</span><span class="fu">der_c</span>(X1,Y1,a,b,c)</span>
-<span id="cb55-28"><a href="#cb55-28" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> a_n</span>
-<span id="cb55-29"><a href="#cb55-29" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> b_n</span>
-<span id="cb55-30"><a href="#cb55-30" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">&lt;-</span> c_n</span>
-<span id="cb55-31"><a href="#cb55-31" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb55-32"><a href="#cb55-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-33"><a href="#cb55-33" aria-hidden="true" tabindex="-1"></a>py <span class="ot">&lt;-</span> a<span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> b<span class="sc">*</span>X <span class="sc">+</span> c</span>
-<span id="cb55-34"><a href="#cb55-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-35"><a href="#cb55-35" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(X,Y)</span>
-<span id="cb55-36"><a href="#cb55-36" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(X,py,<span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>breakingPoint <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>der_a <span class="ot">&lt;-</span> <span class="cf">function</span>(X,Y,a,b,c){</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">&lt;-</span> (Y<span class="sc">-</span>(a<span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> b<span class="sc">*</span>X <span class="sc">+</span> c))<span class="sc">*</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(loss)<span class="sc">/</span><span class="fu">length</span>(X))</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>der_b <span class="ot">&lt;-</span> <span class="cf">function</span>(X,Y,a,b,c){</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">&lt;-</span> (Y<span class="sc">-</span>(a<span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> b<span class="sc">*</span>X <span class="sc">+</span> c))<span class="sc">*</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>X)</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(loss)<span class="sc">/</span><span class="fu">length</span>(X))</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>der_c <span class="ot">&lt;-</span> <span class="cf">function</span>(X,Y,a,b,c){</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">&lt;-</span> (Y<span class="sc">-</span>(a<span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> b<span class="sc">*</span>X <span class="sc">+</span> c))<span class="sc">*</span>(<span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(loss)<span class="sc">/</span><span class="fu">length</span>(X))</span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a><span class="co"># part - 1</span></span>
+<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> X[<span class="fu">which</span>(X<span class="sc">&lt;</span>breakingPoint)]</span>
+<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a>Y1 <span class="ot">&lt;-</span> Y[<span class="fu">which</span>(X<span class="sc">&lt;</span>breakingPoint)]</span>
+<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a>lr <span class="ot">=</span> <span class="fl">1e-8</span></span>
+<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a>  a_n <span class="ot">&lt;-</span> a <span class="sc">-</span> lr<span class="sc">*</span><span class="fu">der_a</span>(X1,Y1,a,b,c)</span>
+<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a>  b_n <span class="ot">&lt;-</span> b <span class="sc">-</span> lr<span class="sc">*</span><span class="fu">der_b</span>(X1,Y1,a,b,c)</span>
+<span id="cb55-28"><a href="#cb55-28" aria-hidden="true" tabindex="-1"></a>  c_n <span class="ot">&lt;-</span> c <span class="sc">-</span> lr<span class="sc">*</span><span class="fu">der_c</span>(X1,Y1,a,b,c)</span>
+<span id="cb55-29"><a href="#cb55-29" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> a_n</span>
+<span id="cb55-30"><a href="#cb55-30" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> b_n</span>
+<span id="cb55-31"><a href="#cb55-31" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">&lt;-</span> c_n</span>
+<span id="cb55-32"><a href="#cb55-32" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-33"><a href="#cb55-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-34"><a href="#cb55-34" aria-hidden="true" tabindex="-1"></a>py <span class="ot">&lt;-</span> a<span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> b<span class="sc">*</span>X <span class="sc">+</span> c</span>
+<span id="cb55-35"><a href="#cb55-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-36"><a href="#cb55-36" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(X,Y)</span>
+<span id="cb55-37"><a href="#cb55-37" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(X,py,<span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Covariates_Macro_Economic_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"a = "</span>,a,<span class="st">"b = "</span>,b,<span class="st">"c = "</span>,c))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "a =  3.2944519745303 b =  4.36747730536588 c =  1.12433971016516"</code></pre>
+<pre><code>[1] "a =  3.06925520303477 b =  0.0459682045824209 c =  1.00073416690002"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># part -2</span></span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>der_inv_a <span class="ot">&lt;-</span> <span class="cf">function</span>(X,Y,a,b,c){</span>
@@ -583,8 +584,8 @@ alternative hypothesis: stationary</code></pre>
 <span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(loss)<span class="sc">/</span><span class="fu">length</span>(X))</span>
 <span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> X[<span class="fu">which</span>(X<span class="sc">&gt;=</span><span class="dv">90</span>)]</span>
-<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>Y2 <span class="ot">&lt;-</span> Y[<span class="fu">which</span>(X<span class="sc">&gt;=</span><span class="dv">90</span>)]</span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> X[<span class="fu">which</span>(X<span class="sc">&gt;=</span>breakingPoint)]</span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>Y2 <span class="ot">&lt;-</span> Y[<span class="fu">which</span>(X<span class="sc">&gt;=</span>breakingPoint)]</span>
 <span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
 <span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>  a_n <span class="ot">&lt;-</span> a <span class="sc">-</span> lr<span class="sc">*</span><span class="fu">der_inv_a</span>(X2,Y2,a,b,c)</span>
@@ -606,7 +607,7 @@ alternative hypothesis: stationary</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"a = "</span>,a,<span class="st">"b = "</span>,b,<span class="st">"c = "</span>,c))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "a =  3.3126875660774 b =  4.36766845111315 c =  1.12160021531396"</code></pre>
+<pre><code>[1] "a =  3.0692713677182 b =  0.0459683627581414 c =  1.00073210827222"</code></pre>
 </div>
 </div>
 <p>Residual Analysis</p>
@@ -615,11 +616,32 @@ alternative hypothesis: stationary</code></pre>
 <div class="cell-output-display">
 <p><img src="Covariates_Macro_Economic_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">adf.test</span>(Y<span class="sc">-</span>p2y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Augmented Dickey-Fuller Test
+
+data:  Y - p2y
+Dickey-Fuller = -1.7535, Lag order = 6, p-value = 0.6795
+alternative hypothesis: stationary</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>r.squared <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, Ypreds,<span class="at">p=</span><span class="dv">1</span>){</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  num <span class="ot">&lt;-</span> <span class="fu">sum</span>((Y<span class="sc">-</span>Ypreds)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  den <span class="ot">&lt;-</span> <span class="fu">sum</span>((Y<span class="sc">-</span><span class="fu">mean</span>(Y))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(Y)</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  r2 <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span>num<span class="sc">/</span>den</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="dv">1</span><span class="sc">-</span>(<span class="dv">1</span><span class="sc">-</span>r2)<span class="sc">*</span>((n<span class="dv">-1</span>)<span class="sc">/</span>(n<span class="sc">-</span>p<span class="dv">-1</span>)))</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a><span class="fu">r.squared</span>(Y,p2y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7947663</code></pre>
+</div>
 </div>
 <p>We can also consider looking at a various lags of <span class="math inline">\(Y\)</span> subtracted from itself to create a more stationary series.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>Y.diff <span class="ot">&lt;-</span> <span class="fu">diff</span>(Y,<span class="dv">6</span>)</span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Y.diff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>Y.diff <span class="ot">&lt;-</span> <span class="fu">diff</span>(Y,<span class="dv">6</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Y.diff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Covariates_Macro_Economic_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>

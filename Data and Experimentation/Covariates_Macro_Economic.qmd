@@ -215,6 +215,7 @@ Running the SWAP model.
 a = 0
 b = 0
 c = 1
+breakingPoint <- 100
 
 der_a <- function(X,Y,a,b,c){
   loss <- (Y-(a*X^2 + b*X + c))*(-2*X^2)
@@ -230,9 +231,9 @@ der_c <- function(X,Y,a,b,c){
 }
 
 # part - 1
-X1 <- X[which(X<90)]
-Y1 <- Y[which(X<90)]
-n = 10000
+X1 <- X[which(X<breakingPoint)]
+Y1 <- Y[which(X<breakingPoint)]
+n = 10
 lr = 1e-8
 for(i in 1:n){
   a_n <- a - lr*der_a(X1,Y1,a,b,c)
@@ -263,8 +264,8 @@ der_inv_c <- function(X,Y,a,b,c){
   return(sum(loss)/length(X))
 }
 
-X2 <- X[which(X>=90)]
-Y2 <- Y[which(X>=90)]
+X2 <- X[which(X>=breakingPoint)]
+Y2 <- Y[which(X>=breakingPoint)]
 
 for(i in 1:n){
   a_n <- a - lr*der_inv_a(X2,Y2,a,b,c)
@@ -288,6 +289,17 @@ Residual Analysis
 
 ```{r}
 plot(Y-p2y)
+adf.test(Y-p2y)
+
+r.squared <- function(Y, Ypreds,p=1){
+  num <- sum((Y-Ypreds)^2)
+  den <- sum((Y-mean(Y))^2)
+  n <- length(Y)
+  r2 <- 1-num/den
+  return(1-(1-r2)*((n-1)/(n-p-1)))
+}
+
+r.squared(Y,p2y)
 ```
 
 We can also consider looking at a various lags of $Y$ subtracted from itself to create a more stationary series.

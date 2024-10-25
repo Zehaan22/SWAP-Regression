@@ -93,14 +93,14 @@ To further experiment on this we consider a bi-directional causality hypothesis 
 Y <- CPI.dat
 X <- SENSEX.dat
 # Computing Lags
-Y.lag1 <- lag(Y)
-X.lag1 <- lag(X)
-Y.lag2 <- lag(Y, k=2)
-X.lag2 <- lag(X, k=2)
-Y.lag3 <- lag(Y, k=3)
-X.lag3 <- lag(X, k=3)
-Y.lag4 <- lag(Y, k=4)
-X.lag4 <- lag(X, k=4)
+Y.lag1 <- stats::lag(Y)
+X.lag1 <- stats::lag(X)
+Y.lag2 <- stats::lag(Y, k=2)
+X.lag2 <- stats::lag(X, k=2)
+Y.lag3 <- stats::lag(Y, k=3)
+X.lag3 <- stats::lag(X, k=3)
+Y.lag4 <- stats::lag(Y, k=4)
+X.lag4 <- stats::lag(X, k=4)
 
 # Fixing the lags
 X <- X[1:(length(X)-5)]
@@ -158,4 +158,24 @@ adf.test(m1$residuals)
 # For Direction - 2
 plot(m2$residuals, ylab = "Residuals", main = "SENSEX on CPI")
 adf.test(m2$residuals)
+```
+
+SWAP Model
+
+```{r}
+# Observing the data
+plot(X,Y)
+plot(X,Y.lag1)
+plot(X,Y.lag2)
+plot(X,Y.lag3)
+plot(X,Y.lag4)
+```
+
+```{r}
+# Observing the data
+plot(Y,X)
+plot(Y,X.lag1)
+plot(Y,X.lag2)
+plot(Y,X.lag3)
+plot(Y,X.lag4)
 ```
