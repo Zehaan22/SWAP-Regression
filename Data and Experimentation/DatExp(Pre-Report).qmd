@@ -140,13 +140,36 @@ adf.test(m2$residuals)
 
 ## Direction 1 
 m1 <- lm(Y~X+X.lag1+Y.lag1+Y.lag2+Y.lag3+Y.lag4)
+# For Direction - 1
+plot(m1$residuals)
+adf.test(m1$residuals)
 summary(m1)
 
 ## Directrion 2
 m2 <- lm(X~Y+Y.lag1+X.lag1+X.lag2+X.lag3+X.lag4)
+# For Direction - 2
+plot(m2$residuals)
+adf.test(m2$residuals)
 summary(m2)
 
 
+```
+
+Other lags of lag-1
+
+```{r}
+
+## Direction 1 
+m1 <- lm(Y~X.lag1+X.lag2+X.lag3+X.lag4+Y.lag1+Y.lag2+Y.lag3+Y.lag4)
+summary(m1)
+plot(m1$residuals)
+adf.test(m1$residuals)
+
+## Direction 2 
+m2 <- lm(X~Y.lag1+Y.lag2+Y.lag3+Y.lag4+X.lag1+X.lag2+X.lag3+X.lag4)
+summary(m2)
+plot(m2$residuals)
+adf.test(m2$residuals)
 ```
 
 ```{r}
@@ -178,4 +201,157 @@ plot(Y,X.lag1)
 plot(Y,X.lag2)
 plot(Y,X.lag3)
 plot(Y,X.lag4)
+```
+
+SWAP model with L1 norm optimisation
+
+```{r}
+
+# Preparing the data
+Y <- SENSEX.dat
+X <- CPI.dat
+
+a = 1
+b = 1
+c = 1
+breakingPoint <- 100
+
+der_a <- function(X,Y,a,b,c){
+  ret <- 0 
+  for(i in 1:length(X)){
+    if(Y[i]-(a*X[i]^2 + b*X[i] + c) >0){
+      ret <- ret -  X[i]^2
+    }else{
+      ret <- ret +   X[i]^2
+    }
+    }
+  return(ret/length(X))
+}
+der_b <- function(X,Y,a,b,c){
+  ret <- 0 
+  for(i in 1:length(X)){
+    if(Y[i]-(a*X[i]^2 + b*X[i] + c) >0){
+      ret <- ret -  X[i]
+    }else{
+      ret <- ret +   X[i]
+    }
+    }
+  return(ret/length(X))
+}
+der_c <- function(X,Y,a,b,c){
+  ret <- 0 
+  for(i in 1:length(X)){
+    if(Y[i]-(a*X[i]^2 + b*X[i] + c) >0){
+      ret <- ret -  1
+    }else{
+      ret <- ret +   1
+    }
+    }
+  return(ret/length(X))
+}
+
+# part - 1
+X1 <- X[which(X<breakingPoint)]
+Y1 <- Y[which(X<breakingPoint)]
+n = 10
+lr = 1e-4
+for(i in 1:n){
+  a_n <- a - lr*der_a(X1,Y1,a,b,c)
+  b_n <- b - lr*der_b(X1,Y1,a,b,c)
+  c_n <- c - lr*der_c(X1,Y1,a,b,c)
+  a <- a_n
+  b <- b_n
+  c <- c_n
+}
+
+py <- a*X^2 + b*X + c
+
+plot(X,Y)
+lines(as.numeric(X),as.numeric(py),col = "red")
+print(paste("a = ",a,"b = ",b,"c = ",c))
+
+# part -2
+der_inv_a <- function(X,Y,a,b,c){
+  ret <- 0 
+  for(i in 1:length(X)){
+    sqrt_term <- sqrt(b^2 - 4*a*(c-Y[i]))
+    if(X[i]+((b/(2*a)) - sqrt(b^2 - 4*a*(c-Y[i]))/(2*a)) >0){
+      
+      ret <- ret -  b/(2*a^2) + (-b + 2*sqrt_term - 4*a*(c-Y[i])/sqrt_term)/(2*a^2)
+    }else{
+      ret <- ret +  b/(2*a^2) + (-b + 2*sqrt_term - 4*a*(c-Y[i])/sqrt_term)/(2*a^2)
+    }
+    }
+  return(ret/length(X))
+}
+der_inv_b <- function(X,Y,a,b,c){
+  ret <- 0 
+  for(i in 1:length(X)){
+    sqrt_term <- sqrt(b^2 - 4*a*(c-Y[i]))
+    if(X[i]+((b/(2*a)) - sqrt(b^2 - 4*a*(c-Y[i]))/(2*a)) >0){
+      
+      ret <- ret +  (1/(2*a))*(1 + b/(a*sqrt_term))
+    }else{
+      ret <- ret -  (1/(2*a))*(1 + b/(a*sqrt_term))
+    }
+    }
+  return(ret/length(X))
+}
+der_inv_c <- function(X,Y,a,b,c){
+  ret <- 0 
+  for(i in 1:length(X)){
+    sqrt_term <- sqrt(b^2 - 4*a*(c-Y[i]))
+    if(X[i]+((b/(2*a)) - sqrt(b^2 - 4*a*(c-Y[i]))/(2*a)) >0){
+      
+      ret <- ret +  (1/sqrt_term)
+    }else{
+      ret <- ret -  (1/sqrt_term)
+    }
+    }
+  return(ret/length(X))
+}
+
+X2 <- X[which(X>=breakingPoint)]
+Y2 <- Y[which(X>=breakingPoint)]
+
+for(i in 1:n){
+  a_n <- a - lr*der_inv_a(X2,Y2,a,b,c)
+  b_n <- b - lr*der_inv_b(X2,Y2,a,b,c)
+  c_n <- c - lr*der_inv_c(X2,Y2,a,b,c)
+  a <- a_n
+  b <- b_n
+  c <- c_n
+}
+
+
+p2y <- a*X^2 + b*X + c
+
+plot(X,Y, xlab = "CPI", ylab = "SENSEX", main = "L1 Norm Optimisation", cex.main = 2)
+lines(as.numeric(X),as.numeric(py),col = "red")
+lines(as.numeric(X),as.numeric(p2y),col = "blue")
+legend("right", c(
+  "Half run",
+  "Full run"
+),
+fill = c(
+  "red",
+  "blue"
+))
+
+print(paste("a = ",a,"b = ",b,"c = ",c))
+```
+
+```{r}
+plot(Y-p2y,type = "p")
+adf.test(Y-p2y)
+
+r.squared <- function(Y, Ypreds,p=1){
+  num <- sum((Y-Ypreds)^2)
+  den <- sum((Y-mean(Y))^2)
+  n <- length(Y)
+  r2 <- 1-num/den
+  return(1-(1-r2)*((n-1)/(n-p-1)))
+}
+
+r.squared(Y,p2y)
 ```
